@@ -13,7 +13,8 @@
     "body-parser": "~1.0.0",
     "debug": "~0.7.4",
     "ejs": "~0.8.5",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "express-partials": "^0.2.0"
   },
   "devDependencies": {
     "supervisor": "^0.6.0"
