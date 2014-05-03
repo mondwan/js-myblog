@@ -1,0 +1,6 @@
+{
+    "db": "myblog",
+    "host": "localhost",
+    "cookieSecret": "myblogsecret",
+    "port": 27017
+}
