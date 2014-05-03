@@ -5,8 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
+var session = require('express-session');
+var mongoStore = require('connect-mongo')(session);
 
 var router = require('./routes/router');
+var setting = require('./static/Setting.json');
 
 var app = express();
 
@@ -20,11 +23,21 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(
+    session({
+        secret: setting.cookieSecret,
+        store: mongoStore({
+            db: setting.db,
+        })
+    })
+);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', router.index);
 app.use('/users', router.users);
 app.use('/time', router.time);
+app.use('/reg', router.reg);
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {
