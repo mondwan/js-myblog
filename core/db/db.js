@@ -29,5 +29,16 @@ module.exports = {
         });
 
         return deferred.promise;
-    }
+    },
+    close: function (db) {
+        var deferred = Q.defer();
+        db.close(true, function (err, ret) {
+            if (err) {
+                deferred.reject(err);
+            } else {
+                deferred.resolve("Database closed");
+            }
+        });
+        return deferred.promise;
+    },
 };

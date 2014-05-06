@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var partials = require('express-partials');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
+var flash = require('connect-flash');
 
 var router = require('./routes/router');
 var setting = require('./static/Setting.json');
@@ -31,13 +32,13 @@ app.use(
         })
     })
 );
-
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
 
 app.use('/', router.index);
 app.use('/users', router.users);
 app.use('/time', router.time);
 app.use('/reg', router.reg);
+app.use(express.static(path.join(__dirname, 'public')));
 
 /// catch 404 and forwarding to error handler
 app.use(function (req, res, next) {
