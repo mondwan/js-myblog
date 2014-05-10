@@ -24,8 +24,8 @@
           </button>
           <a class="navbar-brand" href="/">My Blog</a>
         </div>
-        <div class="navbar-right">
           <% if (user == null) {%>
+            <div class="navbar-right">
               <form class="navbar-form" role="form" method="post" action="/login">
                 <div class="form-group">
                     <input name="username" type="text" placeholder="username" class="form-control">
@@ -35,13 +35,13 @@
                 </div>
                 <button type="submit" class="btn btn-success">Sign in</button>
               </form>
+            </div>
           <% } else {%>
-            <ul class="navbar-brand list-inline">
-                <li><a href="#"><%= user.username %></a></li>
-                <li><a href="/logout" class="btn btn-primary btn-sm">Sign out</a></li>
+            <ul class="nav navbar-nav navbar-right">
+                <li ><a href="#"><%= user.username %></a></li>
+                <li ><a href="/logout" class="btn btn-primary btn-sm">Sign out</a></li>
             </ul>
           <% } %>
-        </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
