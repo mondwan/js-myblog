@@ -9,6 +9,10 @@ var Q = require('q');
 //Custom library
 var projectRoot = path.join(__dirname, '..');
 var User = require(path.join(projectRoot, 'core', 'user', 'user'));
+var accessLib = require(path.join(projectRoot, 'core', 'rules', 'access'));
+
+/* Access right */
+router.use(accessLib.checkLoginStatus);
 
 /* GET login web page. */
 router.get('/', function (req, res) {
