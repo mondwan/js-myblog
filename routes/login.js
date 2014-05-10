@@ -10,46 +10,43 @@ var Q = require('q');
 var projectRoot = path.join(__dirname, '..');
 var User = require(path.join(projectRoot, 'core', 'user', 'user'));
 
-/* GET register web page. */
+/* GET login web page. */
 router.get('/', function (req, res) {
     var err = req.flash('error');
     console.log('GET:/reg req.flash(error)=|%s|', err);
     var arg = {
         error: err.length ? err[0] : false,
     };
-    res.render('reg', arg);
+    res.render('login', arg);
 });
 
-/* POST handle register resquest */
+/* Handle login request */
 router.post('/', function (req, res, next) {
+    //{ username: 'a', password: 'aa'}
+    console.log('POST:/login', req.body);
     var redirect = '/';
     var deferred = Q.defer();
-    //{ username: 'a', password: 'aa', 'confirm-password': 'a' }
-    console.log('POST:/reg', req.body);
 
     try {
-        //1st Validate the correctness of the given request
-        if (req.body['confirm-password'] !== req.body.password) {
-            throw new Error('Two input passwords must be identical. Try again.');
-        }
+        //1. input validation if any
 
-        //2nd delegate the registration to Class::User
-        var registration = new User({
+        //2. user validation
+        var user = new User({
             name: req.body.username,
-            password: req.body.password,
+            password: req.body.password
         });
 
-        registration.register()
-            .then(function dbOperationSuccess(ret) {
-                if (ret === false) {
-                    req.flash('error', registration.message);
-                    redirect = '/reg';
-                } else {
+        user.validate()
+            .then(function validationCB(ret) {
+                if (ret) {
                     //Write user'content into current session
-                    req.session.user = registration;
+                    req.session.user = user;
 
-                    //Notify user that registration success
-                    req.flash('msg', 'Registration Success');
+                    //Notify user that login success
+                    req.flash('msg', 'Login Success');
+                } else {
+                    req.flash('error', user.message);
+                    redirect = '/login';
                 }
 
                 //Fire the deferred promise
@@ -59,10 +56,9 @@ router.post('/', function (req, res, next) {
                 //Dump the error to the web page error handler
                 deferred.reject(err);
             });
-
     } catch (e) {
         req.flash('error', e.message);
-        redirect = '/reg';
+        redirect = '/login';
         //Fire the deferred promise
         deferred.resolve(true);
     }

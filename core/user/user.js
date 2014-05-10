@@ -50,10 +50,10 @@ User.prototype.register = function () {
             self.db = db;
             return self.checkExistence();
         })
-        .then(function (collision) {
+        .then(function (dbObject) {
             //console.log('username collision: %s', collision);
             var ret = true;
-            if (collision === true) {
+            if (dbObject !== null) {
                 self.message = util.format(
                     'Username |%s| already exists',
                     self.username
@@ -78,11 +78,59 @@ User.prototype.register = function () {
 };
 
 /**
+ * Validate this User by comparing information from MongoDb
+ *
+ * @return Class::Q promise
+ * {
+ *  resolve: boolean, true implies login success,
+ *  reject: Error, Reject only if there is errors including something unknown
+ *      or database operations failure
+ * }
+ */
+User.prototype.validate = function () {
+    var self = this;
+    return db.connect()
+        .then(function (db) {
+            //console.log('database connected');
+            self.db = db;
+            return self.checkExistence();
+        })
+        .then(function onCheckExists(dbObject) {
+            var ret = false;
+            if (dbObject !== null) {
+                if (dbObject.password === self.password) {
+                    //login success
+                    ret = true;
+                }
+            }
+            if (!ret) {
+                //login failure
+                self.message = util.format(
+                    'User |%s| does not exists or password incorrect',
+                    self.username
+                );
+            }
+            return ret;
+        })
+        .finally(function () {
+            var ret = true;
+            if (self.db) {
+                ret = db.close(self.db).then(function (result) {
+                    //console.log(result);
+                    self.db = null;
+                    return true;
+                });
+            }
+            return ret;
+        });
+};
+
+/**
  * Check existence of the given username
  *
  * @return Class::Q promise
  * {
- *  resolve: boolean, true implies there is a collision
+ *  resolve: Database object or null. Return a Database object means there is a collision
  *  reject: Error, Reject only if there is an unknown error or fail to run db
  *          operation
  * }
@@ -99,7 +147,7 @@ User.prototype.checkExistence = function () {
             return results.length > 0 ? true : false;
         })
         .then(function checkUsernameCollisionCB(collectionExist) {
-            var ret = false;
+            var ret = null;
             //console.log('checkUsernameCollisionCB', collectionExist);
             if (collectionExist === true) {
                 //validate username
@@ -111,11 +159,11 @@ User.prototype.checkExistence = function () {
                         return Q.npost(cursor, 'nextObject');
                     })
                     .then(function cursorNextCB(object) {
-                        return object === null ? false : true;
+                        return object;
                     });
             } else {
                 //Must be no collision since this is a fresh collection
-                ret = false;
+                ret = null;
             }
             return ret;
         });

@@ -34,10 +34,23 @@ app.use(
 );
 app.use(flash());
 
+// Replace dynamicHelpers by locals
+app.use(function dynamicHelpers(req, res, next) {
+    //Store user reference if any
+    res.locals.user = req.session.user ? req.session.user : null;
+
+    //Store global message if any
+    var msg = req.flash('msg');
+    res.locals.msg = msg.length > 0 ? msg[0] : false;
+
+    next();
+});
+
 app.use('/', router.index);
 app.use('/users', router.users);
 app.use('/time', router.time);
 app.use('/reg', router.reg);
+app.use('/login', router.login);
 app.use(express.static(path.join(__dirname, 'public')));
 
 /// catch 404 and forwarding to error handler

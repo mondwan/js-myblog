@@ -1,11 +1,19 @@
 <div class="container theme-showcase" role="main">
 
   <!-- Main jumbotron for a primary marketing message or call to action -->
+  <% if (msg) {%>
+    <div class="alert alert-success">
+        <%= msg %>
+    </div>
+  <% } %>
+
   <div class="jumbotron">
     <h1>Welcome to MyBlog</h1>
     <p>NodeJS + Node-Express + MongoDB + EJS + Q = MyBlog :D</p>
-    <button type="button" class="btn btn-lg btn-success">Login</button>
-    <a href="/reg" class="btn btn-lg btn-primary">Register</a>
+    <% if (user == null) { %>
+        <a href="/login" class="btn btn-success">Login</a>
+        <a href="/reg" class="btn btn-primary">Register</a>
+    <% } %>
   </div>
 
   <div class="page-header">
