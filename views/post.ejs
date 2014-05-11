@@ -1,0 +1,13 @@
+<% posts.forEach(function (post) { %>
+    <div class="col-sm-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading clearfix">
+              <h3 class="panel-title pull-left"><%= post.publisher %></h3>
+              <h3 class="panel-title pull-right"><%= post.time %></h3>
+        </div>
+        <div class="panel-body">
+            <%= post.message %>
+        </div>
+      </div>
+    </div><!-- /.col-sm-4 -->
+<% }) %>

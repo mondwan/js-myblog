@@ -8,72 +8,25 @@
   <% } %>
 
   <div class="jumbotron">
-    <h1>Welcome to MyBlog</h1>
-    <p>NodeJS + Node-Express + MongoDB + EJS + Q = MyBlog :D</p>
     <% if (user == null) { %>
+        <h1>Welcome to MyBlog</h1>
+        <p>NodeJS + Node-Express + MongoDB + EJS + Q = MyBlog :D</p>
         <a href="/login" class="btn btn-success">Login</a>
         <a href="/reg" class="btn btn-primary">Register</a>
+    <% } else { %>
+        <form class="form-inline" role="form" method="post" action="/publish">
+          <div class="form-group">
+              <input type="text" name="message" class="form-control" id="post" placeholder="Enter message">
+          </div>
+          <button type="submit" class="btn btn-default">post</button>
+        </form>
     <% } %>
   </div>
 
   <div class="page-header">
-    <h1>Panels</h1>
+    <h1>What people are saying</h1>
   </div>
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Panel title</h3>
-        </div>
-        <div class="panel-body">
-          Panel content
-        </div>
-      </div>
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h3 class="panel-title">Panel title</h3>
-        </div>
-        <div class="panel-body">
-          Panel content
-        </div>
-      </div>
-    </div><!-- /.col-sm-4 -->
-    <div class="col-sm-4">
-      <div class="panel panel-success">
-        <div class="panel-heading">
-          <h3 class="panel-title">Panel title</h3>
-        </div>
-        <div class="panel-body">
-          Panel content
-        </div>
-      </div>
-      <div class="panel panel-info">
-        <div class="panel-heading">
-          <h3 class="panel-title">Panel title</h3>
-        </div>
-        <div class="panel-body">
-          Panel content
-        </div>
-      </div>
-    </div><!-- /.col-sm-4 -->
-    <div class="col-sm-4">
-      <div class="panel panel-warning">
-        <div class="panel-heading">
-          <h3 class="panel-title">Panel title</h3>
-        </div>
-        <div class="panel-body">
-          Panel content
-        </div>
-      </div>
-      <div class="panel panel-danger">
-        <div class="panel-heading">
-          <h3 class="panel-title">Panel title</h3>
-        </div>
-        <div class="panel-body">
-          Panel content
-        </div>
-      </div>
-    </div><!-- /.col-sm-4 -->
-  </div>
+
+  <% include post %>
 
 </div> <!-- /container -->

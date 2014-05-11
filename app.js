@@ -52,6 +52,7 @@ app.use('/time', router.time);
 app.use('/reg', router.reg);
 app.use('/login', router.login);
 app.use('/logout', router.logout);
+app.use('/publish', router.publish);
 app.use(express.static(path.join(__dirname, 'public')));
 
 /// catch 404 and forwarding to error handler
