@@ -5,6 +5,7 @@ var util = require('util');
 
 //3rd party library
 var Q = require('q');
+var _ = require('underscore');
 Q.longStackSupport = true;
 
 //Custom library
@@ -69,14 +70,18 @@ Post.prototype.publish = function (user, message) {
 /**
  * Fetch posts from database
  *
+ * @param username
+ *
  * @return Class::Q promise
  * {
  *  resolve: Array of post object
  *  reject: Errors from database
  * }
  */
-Post.prototype.fetch = function () {
+Post.prototype.fetch = function (username) {
     var self = this;
+    username = username || null;
+
     return db.connect()
         .then(function connectDatabaseCB(db) {
             self.db = db;
@@ -87,6 +92,15 @@ Post.prototype.fetch = function () {
         })
         .then(function getPostsCursorCB(cursor) {
             return Q.npost(cursor, 'toArray');
+        })
+        .then(function postsArrayCB(posts) {
+            var ret = posts;
+            if (username !== null) {
+                ret = _.filter(posts, function (post) {
+                    return post.publisher === username;
+                });
+            }
+            return ret;
         })
         .finally(function () {
             var ret = true;
